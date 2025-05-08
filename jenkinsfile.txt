@@ -1,0 +1,140 @@
+pipeline {
+    agent any
+
+    environment {
+        WEBHOOK_URL = 'http://10.1.21.102:3002/webhook/jenkins'
+        AUTH_TOKEN = 'my-secret-jenkins-token'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+                script {
+                    def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                    sh """
+                        curl -X POST $WEBHOOK_URL \\
+                          -H "Content-Type: application/json" \\
+                          -H "x-auth-token: $AUTH_TOKEN" \\
+                          -d '{
+                            "name": "${JOB_NAME}",
+                            "build": {
+                              "number": "${BUILD_NUMBER}",
+                              "status": "BUILD",
+                              "timestamp": "${timestamp}"
+                            },
+                            "eventType": "build"
+                          }'
+                    """
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                script {
+                    try {
+                        sh 'python3 test.py'
+                        sh 'python3 test2.py'
+                        sh 'python3 test4.py'
+                        sh 'python3 raghoodiii.py' 
+                        sh 'python3 testforRagh.py'	
+                        sh 'python3 congrats.py'
+                        sh 'python3 raghood33ii.py'
+                        sh 'python3 PipelineIntergratingBesu.py'
+
+
+                        def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                        sh """
+                            curl -X POST $WEBHOOK_URL \\
+                              -H "Content-Type: application/json" \\
+                              -H "x-auth-token: $AUTH_TOKEN" \\
+                              -d '{
+                                "name": "${JOB_NAME}",
+                                "build": {
+                                  "number": "${BUILD_NUMBER}",
+                                  "status": "TEST",
+                                  "timestamp": "${timestamp}"
+                                },
+                                "eventType": "test"
+                              }'
+                        """
+                    } catch (err) {
+                        error("Test stage failed: ${err.message}")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+                script {
+                    sh 'python3 congrats.py'
+
+                    def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                    sh """
+                        curl -X POST $WEBHOOK_URL \\
+                          -H "Content-Type: application/json" \\
+                          -H "x-auth-token: $AUTH_TOKEN" \\
+                          -d '{
+                            "name": "${JOB_NAME}",
+                            "build": {
+                              "number": "${BUILD_NUMBER}",
+                              "status": "DEPLOY",
+                              "timestamp": "${timestamp}"
+                            },
+                            "eventType": "deploy"
+                          }'
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+            script {
+                def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                sh """
+                    curl -X POST $WEBHOOK_URL \\
+                      -H "Content-Type: application/json" \\
+                      -H "x-auth-token: $AUTH_TOKEN" \\
+                      -d '{
+                        "name": "${JOB_NAME}",
+                        "build": {
+                          "number": "${BUILD_NUMBER}",
+                          "status": "SUCCESS",
+                          "timestamp": "${timestamp}"
+                        },
+                        "eventType": "build"
+                      }'
+                """
+            }
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+            script {
+                def timestamp = new Date().format("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                sh """
+                    curl -X POST $WEBHOOK_URL \\
+                      -H "Content-Type: application/json" \\
+                      -H "x-auth-token: $AUTH_TOKEN" \\
+                      -d '{
+                        "name": "${JOB_NAME}",
+                        "build": {
+                          "number": "${BUILD_NUMBER}",
+                          "status": "FAILURE",
+                          "timestamp": "${timestamp}"
+                        },
+                        "eventType": "build"
+                      }'
+                """
+            }
+        }
+    }
+}
+
