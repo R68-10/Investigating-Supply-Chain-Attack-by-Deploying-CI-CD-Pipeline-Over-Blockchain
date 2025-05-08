@@ -1,93 +1,54 @@
-# Docker-compose configuration
+Repository Structure & Branch Descriptions
 
-Runs Blockscout locally in Docker containers with [docker-compose](https://github.com/docker/compose).
+This repository contains all components required for our capstone project:
+Investigating Supply Chain Attack by Deploying CI/CD Pipeline Over Blockchain
 
-## Prerequisites
+Each branch is isolated to manage a specific module of the system.
 
-- Docker v20.10+
-- Docker-compose 2.x.x+
-- Running Ethereum JSON RPC client
+🔹 main (Default Branch)
+This branch holds the general structure of the project and serves as the entry point. It does not contain all code directly — instead, each module is organized into its own branch.
 
-## Building Docker containers from source
+🔹 API-Server
+Contains the Node.js webhook server that listens to events from:
+    Gitea (push events)
+    Jenkins (build/test/deploy status)
+It uses ethers.js to send transactions to the smart contract deployed on the blockchain.
 
-**Note**: in all below examples, you can use `docker compose` instead of `docker-compose`, if compose v2 plugin is installed in Docker.
+🔹 BlockScout
+Holds the setup and configuration for running Blockscout as a blockchain explorer.
+This branch depends on 3 internal directories:
+    envs: Environment variable files for all services (e.g., database, Blockscout)
+    proxy: Reverse proxy setup (likely Nginx or Traefik) to route traffic
+    services: Docker Compose and related config for Blockscout backend/frontend/database
+    These directories are part of Blockscout and should be kept together.
 
-```bash
-cd ./docker-compose
-docker-compose up --build
-```
+🔹 Hyperledger-Besu-Blockchain
+Includes the setup for the private Ethereum-compatible blockchain using Hyperledger Besu.
+This contains:
+    Genesis configuration
+    Node setup
+    QBFT consensus setup
+    Dockerized Besu deployment
 
-**Note**: if you don't need to make backend customizations, you can run `docker-compose up` in order to launch from pre-build backend Docker image. This will be much faster.
+🔹 Jenkins
+Holds Jenkins pipeline configuration, possibly including:
+    Declarative pipeline files (Jenkinsfile)
+    Webhook setup for connecting with API server
+    Job definitions and container configs
 
-This command uses `docker-compose.yml` by-default, which builds the backend of the explorer into the Docker image and runs 9 Docker containers:
+🔹 envs
+Environment configuration files (.env) used across different services.
+Includes RPC URLs, private keys, database URLs, and token secrets.
 
-- Postgres 14.x database, which will be available at port 7432 on the host machine.
-- Redis database of the latest version.
-- Blockscout backend with api at /api path.
-- Nginx proxy to bind backend, frontend and microservices.
-- Blockscout explorer at http://localhost.
+🔹 proxy
+Contains reverse proxy configurations used to expose services like:
+    Blockscout frontend/backend
+    Jenkins
+    API server
 
-and 5 containers for microservices (written in Rust):
-
-- [Stats](https://github.com/blockscout/blockscout-rs/tree/main/stats) service with a separate Postgres 14 DB.
-- [Sol2UML visualizer](https://github.com/blockscout/blockscout-rs/tree/main/visualizer) service.
-- [Sig-provider](https://github.com/blockscout/blockscout-rs/tree/main/sig-provider) service.
-- [User-ops-indexer](https://github.com/blockscout/blockscout-rs/tree/main/user-ops-indexer) service.
-
-**Note for Linux users**: Linux users need to run the local node on http://0.0.0.0/ rather than http://127.0.0.1/
-
-## Configs for different Ethereum clients
-
-The repo contains built-in configs for different JSON RPC clients without need to build the image.
-
-| __JSON RPC Client__    | __Docker compose launch command__ |
-| -------- | ------- |
-| Erigon  | `docker-compose -f erigon.yml up -d`    |
-| Geth (suitable for Reth as well) | `docker-compose -f geth.yml up -d`     |
-| Geth Clique    | `docker-compose -f geth-clique-consensus.yml up -d`    |
-| Nethermind, OpenEthereum    | `docker-compose -f nethermind.yml up -d`    |
-| Anvil    | `docker-compose -f anvil.yml up -d`    |
-| HardHat network    | `docker-compose -f hardhat-network.yml up -d`    |
-
-- Running only explorer without DB: `docker-compose -f external-db.yml up -d`. In this case, no db container is created. And it assumes that the DB credentials are provided through `DATABASE_URL` environment variable on the backend container.
-- Running explorer with external backend: `docker-compose -f external-backend.yml up -d`
-- Running explorer with external frontend: `FRONT_PROXY_PASS=http://host.docker.internal:3000/ docker-compose -f external-frontend.yml up -d`
-- Running all microservices: `docker-compose -f microservices.yml up -d`
-- Running only explorer without microservices: `docker-compose -f no-services.yml up -d`
-
-All of the configs assume the Ethereum JSON RPC is running at http://localhost:8545.
-
-In order to stop launched containers, run `docker-compose -f config_file.yml down`, replacing `config_file.yml` with the file name of the config which was previously launched.
-
-You can adjust BlockScout environment variables:
-
-- for backend in `./envs/common-blockscout.env`
-- for frontend in `./envs/common-frontend.env`
-- for stats service in `./envs/common-stats.env`
-- for visualizer in `./envs/common-visualizer.env`
-- for user-ops-indexer in `./envs/common-user-ops-indexer.env`
-
-Descriptions of the ENVs are available
-
-- for [backend](https://docs.blockscout.com/setup/env-variables)
-- for [frontend](https://github.com/blockscout/frontend/blob/main/docs/ENVS.md).
-
-## Running Docker containers via Makefile
-
-Prerequisites are the same, as for docker-compose setup.
-
-Start all containers:
-
-```bash
-cd ./docker
-make start
-```
-
-Stop all containers:
-
-```bash
-cd ./docker
-make stop
-```
-
-***Note***: Makefile uses the same .env files since it is running docker-compose services inside.
+🔹 services
+Contains dockerized microservice definitions, especially for:
+    Blockscout
+    PostgreSQL (for explorer DB)
+    Redis
+    Other dependency containers
