@@ -1,0 +1,233 @@
+Push event to branch main
+Looking up repository MyProject/test_repo
+Querying the current revision of branch main...
+Current revision of branch main is 256e6cbb8376f7b137e9c962efef0e489656eb28
+Obtained Jenkinsfile from 256e6cbb8376f7b137e9c962efef0e489656eb28
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/test_with_gitea2_test_repo_main
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: NONE
+using credential Gitea-Token
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/test_with_gitea2_test_repo_main/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url http://172.17.0.1:3000/MyProject/test_repo.git # timeout=10
+Fetching without tags
+Fetching upstream changes from http://172.17.0.1:3000/MyProject/test_repo.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5'
+using GIT_ASKPASS to set credentials 
+ > git fetch --no-tags --force --progress -- http://172.17.0.1:3000/MyProject/test_repo.git +refs/heads/main:refs/remotes/origin/main # timeout=10
+Checking out Revision 256e6cbb8376f7b137e9c962efef0e489656eb28 (main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 256e6cbb8376f7b137e9c962efef0e489656eb28 # timeout=10
+Commit message: "update raghoodiii35252"
+ > git rev-list --no-walk 501630618cb5f085025319cdc4fdbaa9c8497107 # timeout=10
+[Gitea] Notifying branch build status: PENDING Build started...
+[Gitea] Notified
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] echo
+Building the project...
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ curl -X POST http://10.1.21.102:3002/webhook/jenkins -H Content-Type: application/json -H x-auth-token: my-secret-jenkins-token -d {
+                            "name": "test with gitea2/test_repo/main",
+                            "build": {
+                              "number": "80",
+                              "status": "BUILD",
+                              "timestamp": "2025-04-29T13:32:36Z"
+                            },
+                            "eventType": "build"
+                          }
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   380    0     0  100   380      0    315  0:00:01  0:00:01 --:--:--   315100   380    0     0  100   380      0    172  0:00:02  0:00:02 --:--:--   172100   380    0     0  100   380      0    118  0:00:03  0:00:03 --:--:--   118100   544  100   164  100   380     39     91  0:00:04  0:00:04 --:--:--   130100   544  100   164  100   380     39     91  0:00:04  0:00:04 --:--:--   130
+{"status":"success","message":"build event logged to blockchain","txHash":"0x5b5900be278d8f263735ff0429429385d7d95fe9494c758336900d94a51ff0cb","blockNumber":410187}
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] echo
+Running tests...
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ python3 test.py
+Hello, CI/CD! This is an automated build test.
+[Pipeline] sh
++ python3 test2.py
+Starting Python Test
+Running test_function...
+Test passed!
+All tests passed!
+[Pipeline] sh
++ python3 test4.py
+Final Webhook Test!
+[Pipeline] sh
++ python3 raghoodiii.py
+hiiii
+hiiiedi
+hate u
+hate u mooooreee
+[Pipeline] sh
++ python3 testforRagh.py
+let's try this :)
+wooow
+[Pipeline] sh
++ python3 congrats.py
+congrats
+hii
+[Pipeline] sh
++ python3 raghood33ii.py
+hiii
+[Pipeline] sh
++ python3 PipelineIntergratingBesu.py
+
+🚀 Blockchain-Based CI/CD Logging Project Overview
+
+
+=======
+1. Goal
+=======
+To create an immutable and transparent record of CI/CD pipeline events by integrating a private Ethereum blockchain (Hyperledger Besu) with Gitea and Jenkins.
+
+=============
+2. Components
+=============
+- Gitea: A self-hosted Git service where developers push their code.
+- Jenkins: Orchestrates the Build, Test, and Deploy pipeline stages.
+- Smart Contract: Logs metadata from pushes and pipeline stages (e.g., who pushed, build status).
+- Hyperledger Besu: Runs a private Ethereum-compatible blockchain with QBFT consensus.
+- Webhook API: Middleware that listens to Gitea/Jenkins and triggers contract functions.
+
+=====================
+3. Event Logging Flow
+=====================
+1. Developer pushes code to Gitea.
+2. Gitea webhook sends event to API → API logs it on-chain via `logPush`.
+3. Jenkins pipeline gets triggered:
+   - Build → logs via `logBuild`
+   - Test → logs via `logTest`
+   - Deploy → logs via `logDeploy`
+4. All logs are stored immutably in the smart contract and can be queried.
+
+====================
+4. Blockchain Design
+====================
+- Smart contract stores mappings of each event type.
+- Events are emitted for external indexing (e.g., Otterscan, Blockscout).
+- Access tokens used to validate webhook authenticity.
+- Chain ID: 1337 (private network).
+
+===========
+5. Benefits
+===========
+- Traceable: Anyone can trace CI/CD actions back to source.
+- Immutable: Once logged, entries can not be modified.
+- Investigable: Speeds up forensic audits and compliance reviews.
+- Decentralized: Validates the integrity of the entire software delivery process.
+
+=====================
+6. Tech Stack Summary
+=====================
+- Python (Webhook Server)
+- Solidity (Smart Contract)
+- Ethers.js (Blockchain interaction)
+- Docker Desktop (for all services)
+- Otterscan or Blockscout (Explorer visualization)
+- Jenkinsfile (for CI stages)
+
+✅ Project architecture successfully described.
+[Pipeline] sh
++ curl -X POST http://10.1.21.102:3002/webhook/jenkins -H Content-Type: application/json -H x-auth-token: my-secret-jenkins-token -d {
+                                "name": "test with gitea2/test_repo/main",
+                                "build": {
+                                  "number": "80",
+                                  "status": "TEST",
+                                  "timestamp": "2025-04-29T13:32:53Z"
+                                },
+                                "eventType": "test"
+                              }
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   410    0     0  100   410      0    340  0:00:01  0:00:01 --:--:--   341100   410    0     0  100   410      0    185  0:00:02  0:00:02 --:--:--   186100   410    0     0  100   410      0    127  0:00:03  0:00:03 --:--:--   127100   410    0     0  100   410      0     97  0:00:04  0:00:04 --:--:--    97100   410    0     0  100   410      0     78  0:00:05  0:00:05 --:--:--    78100   410    0     0  100   410      0     65  0:00:06  0:00:06 --:--:--     0100   410    0     0  100   410      0     56  0:00:07  0:00:07 --:--:--     0100   573  100   163  100   410     19     49  0:00:08  0:00:08 --:--:--    32100   573  100   163  100   410     19     49  0:00:08  0:00:08 --:--:--    40
+{"status":"success","message":"test event logged to blockchain","txHash":"0x03a14a5b0b0c3bac2d5753c681cf121a9aea194db651a836f6e9aa499a3ca00d","blockNumber":410199}
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+[Pipeline] echo
+Deploying the application...
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ python3 congrats.py
+congrats
+hii
+[Pipeline] sh
++ curl -X POST http://10.1.21.102:3002/webhook/jenkins -H Content-Type: application/json -H x-auth-token: my-secret-jenkins-token -d {
+                            "name": "test with gitea2/test_repo/main",
+                            "build": {
+                              "number": "80",
+                              "status": "DEPLOY",
+                              "timestamp": "2025-04-29T13:33:02Z"
+                            },
+                            "eventType": "deploy"
+                          }
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   382    0     0  100   382      0    317  0:00:01  0:00:01 --:--:--   317100   382    0     0  100   382      0    173  0:00:02  0:00:02 --:--:--   173100   382    0     0  100   382      0    119  0:00:03  0:00:03 --:--:--   119100   382    0     0  100   382      0     90  0:00:04  0:00:04 --:--:--    90100   382    0     0  100   382      0     73  0:00:05  0:00:05 --:--:--    73100   382    0     0  100   382      0     61  0:00:06  0:00:06 --:--:--     0100   382    0     0  100   382      0     52  0:00:07  0:00:07 --:--:--     0100   547  100   165  100   382     20     46  0:00:08  0:00:08 --:--:--    33100   547  100   165  100   382     20     46  0:00:08  0:00:08 --:--:--    41
+{"status":"success","message":"deploy event logged to blockchain","txHash":"0xc8b86a7f14f7a9b840f02b9a44fb2924f3309bd5fdf686316afaec4fc8de751f","blockNumber":410203}
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Pipeline completed successfully!
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ curl -X POST http://10.1.21.102:3002/webhook/jenkins -H Content-Type: application/json -H x-auth-token: my-secret-jenkins-token -d {
+                        "name": "test with gitea2/test_repo/main",
+                        "build": {
+                          "number": "80",
+                          "status": "SUCCESS",
+                          "timestamp": "2025-04-29T13:33:11Z"
+                        },
+                        "eventType": "build"
+                      }
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   350    0     0  100   350      0   1738 --:--:-- --:--:-- --:--:--  1732100   350    0     0  100   350      0    290  0:00:01  0:00:01 --:--:--   290100   350    0     0  100   350      0    158  0:00:02  0:00:02 --:--:--   158100   350    0     0  100   350      0    109  0:00:03  0:00:03 --:--:--   109100   350    0     0  100   350      0     83  0:00:04  0:00:04 --:--:--    83100   350    0     0  100   350      0     67  0:00:05  0:00:05 --:--:--     0100   350    0     0  100   350      0     56  0:00:06  0:00:06 --:--:--     0100   350    0     0  100   350      0     48  0:00:07  0:00:07 --:--:--     0100   514  100   164  100   350     20     42  0:00:08  0:00:08 --:--:--    33100   514  100   164  100   350     20     42  0:00:08  0:00:08 --:--:--    41
+{"status":"success","message":"build event logged to blockchain","txHash":"0x77dd2009b92b7c082639002ba31818348175ba53e2f1d0deddc951b5bd82e516","blockNumber":410207}
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+[Gitea] Notifying branch build status: SUCCESS This commit looks good
+[Gitea] Notified
+Finished: SUCCESS
